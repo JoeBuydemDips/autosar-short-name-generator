@@ -1,14 +1,14 @@
 import pandas as pd
-import os, openai
+# import os, openai
 from fuzzywuzzy import process
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from dotenv import load_dotenv, find_dotenv
-_ = load_dotenv(find_dotenv())
+# import numpy as np
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.metrics.pairwise import cosine_similarity
+# from dotenv import load_dotenv, find_dotenv
+# _ = load_dotenv(find_dotenv())
 
 
-openai.api_key  = os.getenv('OPENAI_API_KEY')
+# openai.api_key  = os.getenv('OPENAI_API_KEY')
 
 
 def long_name_to_short_name(user_input, data_frame):
@@ -36,7 +36,7 @@ def long_name_to_short_name(user_input, data_frame):
     # Output results
     if no_match_list:
         # print(f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)}")
-        result = f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)} Not found in keywords"
+        result = f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)}"
         
         # For each keyword with no match, get and print GPT-3 suggestions
         for keyword in no_match_list:
@@ -83,18 +83,18 @@ def long_name_to_short_name(user_input, data_frame):
 #     filtered_matches = [match for match in closest_matches if match[0] in keyword_list]
 
 #     return [match[0] for match in filtered_matches]
-def get_suggestions(keyword, df):
-    # Query GPT-3 to get suggestions (Make sure you have your API key properly set up)
-    keyword_list = df['Keyword'].tolist()
-    keyword_str = ', '.join(keyword_list)
-    prompt = f"This is a list of keywords: {keyword_str}. Suggest a singular form or a typo correction for the keyword: '{keyword}' from the list of keywords."
-    response = openai.Completion.create(
-        engine="text-davinci-003",  # replace with your desired engine
-        prompt=prompt,
-        max_tokens=3
-    )
-    suggestion = response.choices[0].text.strip()  # This will be your suggestion
-    return suggestion
+# def get_suggestions(keyword, df):
+#     # Query GPT-3 to get suggestions (Make sure you have your API key properly set up)
+#     keyword_list = df['Keyword'].tolist()
+#     keyword_str = ', '.join(keyword_list)
+#     prompt = f"This is a list of keywords: {keyword_str}. Suggest a singular form or a typo correction for the keyword: '{keyword}' from the list of keywords."
+#     response = openai.Completion.create(
+#         engine="text-davinci-003",  # replace with your desired engine
+#         prompt=prompt,
+#         max_tokens=3
+#     )
+#     suggestion = response.choices[0].text.strip()  # This will be your suggestion
+#     return suggestion
 
 
 # Function to find similar matches in the DataFrame
@@ -118,20 +118,20 @@ def get_similar_keywords(keyword, data_frame, num_suggestions=3):
         return ', '.join(results)
 
 
-def find_closest_match(user_input, df):
-    # Add the user input to the keyword list for vectorization
-    keyword_list = df['Keyword'].tolist()
-    # keyword_str = ', '.join(keyword_list)
-    keywords_with_input = keyword_list + [user_input]
+# def find_closest_match(user_input, df):
+#     # Add the user input to the keyword list for vectorization
+#     keyword_list = df['Keyword'].tolist()
+#     # keyword_str = ', '.join(keyword_list)
+#     keywords_with_input = keyword_list + [user_input]
     
-    # Vectorize the words
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(keywords_with_input)
+#     # Vectorize the words
+#     vectorizer = TfidfVectorizer()
+#     tfidf_matrix = vectorizer.fit_transform(keywords_with_input)
     
-    # Compute cosine similarity
-    cosine_similarities = cosine_similarity(tfidf_matrix[-1], tfidf_matrix)
+#     # Compute cosine similarity
+#     cosine_similarities = cosine_similarity(tfidf_matrix[-1], tfidf_matrix)
     
-    # Get the index of the most similar keyword
-    closest_idx = np.argmax(cosine_similarities[0][:-1])
+#     # Get the index of the most similar keyword
+#     closest_idx = np.argmax(cosine_similarities[0][:-1])
     
-    return keyword_list[closest_idx]
+#     return keyword_list[closest_idx]

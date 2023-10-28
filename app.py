@@ -5,7 +5,7 @@ from utils import *
 st.title('Autosar Parameter Short Name Generator')
 
 # User input
-user_input = st.text_input("Parameter Long Name", placeholder='Enter long name: eg. Acceleraor Pedal')
+user_input = st.text_input("Parameter Long Name", placeholder='Enter long name: eg. Accelerator Pedal')
 df = pd.read_csv("autosar_data.csv")
 
 if user_input:
