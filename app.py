@@ -20,15 +20,25 @@ if selected_option == "Generate Short Name":
     if user_input:
         # st.subheader("Parameter Short Name")
         # st.write(long_name_to_short_name(user_input, df))
-        short_name = long_name_to_short_name(user_input, df)
-        st.text_area("Parameter Short Name", short_name, disabled=True)
+        short_name, valid = long_name_to_short_name(user_input, df)
+        # st.text_area("Parameter Short Name", short_name, disabled=True)
+        st.subheader("Parameter Short Name")
+        if valid:
+            st.success(short_name)
+        else:
+            st.warning(short_name)
 
 elif selected_option == "Find Long Name":
     # User input
     user_input = st.text_input("Parameter Short Name", placeholder='Enter short name: eg. AccrPedl')
 
     if user_input:
-        # st.subheader("Parameter Short Name")
+        
         # st.write(long_name_to_short_name(user_input, df))
-        long_name = short_name_to_long_name(user_input, df)
-        st.text_area("Parameter Long Name", long_name, disabled=True)
+        long_name, valid = short_name_to_long_name(user_input, df)
+        # st.text_area("Parameter Long Name", long_name, disabled=True)
+        st.subheader("Parameter Long Name")
+        if valid:
+            st.success(long_name)
+        else:
+            st.warning(long_name)

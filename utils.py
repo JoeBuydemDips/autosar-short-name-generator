@@ -1,6 +1,7 @@
 import pandas as pd
 # import os, openai
 from fuzzywuzzy import process
+import re
 # import numpy as np
 # from sklearn.feature_extraction.text import TfidfVectorizer
 # from sklearn.metrics.pairwise import cosine_similarity
@@ -21,6 +22,8 @@ def long_name_to_short_name(user_input, data_frame):
     abbreviation_list = []
     no_match_list = []
 
+    valid = True
+
     # Loop through each user-entered keyword to find abbreviations
     for keyword in keywords:
         # Use DataFrame filtering to find matching abbreviation
@@ -38,6 +41,8 @@ def long_name_to_short_name(user_input, data_frame):
         # print(f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)}")
         result = "Invalid Autosar Long Name"
         result += f"Consider changing the following keyword(s): {', '.join(no_match_list)}"
+
+        valid = False
         
         # For each keyword with no match, get and print GPT-3 suggestions
         for keyword in no_match_list:
@@ -54,7 +59,7 @@ def long_name_to_short_name(user_input, data_frame):
         # result = f"{result}"
 
     
-    return result
+    return result, valid
 
 # Function to get GPT-3 suggestions for a given keyword and find closest matches in the DataFrame
 # Function to get GPT-3 suggestions based on the DataFrame content
@@ -182,26 +187,55 @@ def short_name_to_long_name(pascal_string, df):
     keywords = []
     abbreviations_not_found = []
 
-    abbreviations_list = split_pascal_case(pascal_string)
+    valid = True
 
-    # Iterate through each abbreviation in the list
-    for abbreviation in abbreviations_list:
-        # Retrieve the keyword from the dictionary and append to the keywords list
-        # If abbreviation not found, append the abbreviation itself
-        keyword_row = df[df["Abbreviation"] == abbreviation]
-            # If there's a match, return the "Keyword", otherwise return None
-        if not keyword_row.empty:
-            keywords.append(keyword_row["Keyword"].values[0])
+    # check if it's a valid Pascal Case:
+    if is_pascal_case(pascal_string):
+        abbreviations_list = split_pascal_case(pascal_string)
+
+        # Iterate through each abbreviation in the list
+        for abbreviation in abbreviations_list:
+            # Retrieve the keyword from the dictionary and append to the keywords list
+            # If abbreviation not found, append the abbreviation itself
+            keyword_row = df[df["Abbreviation"] == abbreviation]
+                # If there's a match, return the "Keyword", otherwise return None
+            if not keyword_row.empty:
+                keywords.append(keyword_row["Keyword"].values[0])
+            else:
+                abbreviations_not_found.append(abbreviation)
+
+        # Join the keywords with a space and return
+        if abbreviations_not_found == []:
+            return ' '.join(keywords), valid
         else:
-            abbreviations_not_found.append(abbreviation)
-
-    # Join the keywords with a space and return
-    if abbreviations_not_found == []:
-        return ' '.join(keywords)
+            valid = False
+            text = "Invalid Autosar Short Name!\n"
+            text += "Consider changing the following Abbreviation(s): "
+            text += (', '.join(abbreviations_not_found))
+            return text, valid
+    
     else:
-        text = "Invalid Autosar Short Name!\n"
-        text += "Consider changing the following Abbreviation(s): "
-        text += (', '.join(abbreviations_not_found))
-        return text
+        valid = False
+        text = "Invalid Autosar Short Name!"
+        text += "\nAutosar names should be PascalCase."
+        text += "\nAutosar names should have no spaces or underscores."
 
+        return text, valid
+
+
+def is_pascal_case(s):
+    """
+    Check if a string is in valid PascalCase.
+
+    Parameters:
+    s (str): The string to check.
+
+    Returns:
+    bool: True if the string is in PascalCase, False otherwise.
+    """
+    # Regular expression for PascalCase
+    pascal_case_pattern = re.compile(r'^[A-Z][a-z0-9]+(?:[A-Z][a-z0-9]+)*$')
+    
+    # Return True if the string matches the pattern, False otherwise
+    return bool(pascal_case_pattern.match(s))
 
