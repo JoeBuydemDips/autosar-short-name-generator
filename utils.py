@@ -36,7 +36,8 @@ def long_name_to_short_name(user_input, data_frame):
     # Output results
     if no_match_list:
         # print(f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)}")
-        result = f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)}"
+        result = "Invalid Autosar Long Name"
+        result += f"Consider changing the following keyword(s): {', '.join(no_match_list)}"
         
         # For each keyword with no match, get and print GPT-3 suggestions
         for keyword in no_match_list:
@@ -135,3 +136,72 @@ def get_similar_keywords(keyword, data_frame, num_suggestions=3):
 #     closest_idx = np.argmax(cosine_similarities[0][:-1])
     
 #     return keyword_list[closest_idx]
+
+def split_pascal_case(pascal_string):
+    """
+    Splits a PascalCase string into individual words.
+
+    Parameters:
+    pascal_string (str): The PascalCase string to be split.
+
+    Returns:
+    list: A list of strings that were concatenated in PascalCase format.
+    """
+    # List to store the split words
+    words = []
+    
+    # The start index of the current word
+    start_index = 0
+
+    # Iterate over the string, character by character
+    for i in range(1, len(pascal_string)):
+        # If the current character is uppercase and not the start of the string
+        if pascal_string[i].isupper() and i > start_index:
+            # Append the word from the start index to the current position
+            words.append(pascal_string[start_index:i])
+            # Set the new start index
+            start_index = i
+    
+    # Append the last word
+    words.append(pascal_string[start_index:])
+
+    return words
+
+def short_name_to_long_name(pascal_string, df):
+    """
+    Takes a short name, and outputs the corresponding keywords for each abbreviation.
+
+    Parameters:
+    short_name: An autosar short name.
+    df: A dataframe where key is keyword and value is abbreviation.
+
+    Returns:
+    str: A string containing the full keywords separated by spaces.
+    """
+    # Initialize an empty list to store keywords
+    keywords = []
+    abbreviations_not_found = []
+
+    abbreviations_list = split_pascal_case(pascal_string)
+
+    # Iterate through each abbreviation in the list
+    for abbreviation in abbreviations_list:
+        # Retrieve the keyword from the dictionary and append to the keywords list
+        # If abbreviation not found, append the abbreviation itself
+        keyword_row = df[df["Abbreviation"] == abbreviation]
+            # If there's a match, return the "Keyword", otherwise return None
+        if not keyword_row.empty:
+            keywords.append(keyword_row["Keyword"].values[0])
+        else:
+            abbreviations_not_found.append(abbreviation)
+
+    # Join the keywords with a space and return
+    if abbreviations_not_found == []:
+        return ' '.join(keywords)
+    else:
+        text = "Invalid Autosar Short Name!\n"
+        text += "Consider changing the following Abbreviation(s): "
+        text += (', '.join(abbreviations_not_found))
+        return text
+
+
