@@ -24,9 +24,9 @@ if selected_option == "Generate Short Name":
         # st.text_area("Parameter Short Name", short_name, disabled=True)
         st.subheader("Parameter Short Name")
         if valid:
-            st.success(short_name)
+            st.success(short_name, icon="✅")
         else:
-            st.warning(short_name)
+            st.warning(short_name, icon="⚠️")
 
 elif selected_option == "Find Long Name":
     # User input
@@ -39,6 +39,6 @@ elif selected_option == "Find Long Name":
         # st.text_area("Parameter Long Name", long_name, disabled=True)
         st.subheader("Parameter Long Name")
         if valid:
-            st.success(long_name)
+            st.success(long_name, icon="✅")
         else:
-            st.warning(long_name)
+            st.warning(long_name, icon="⚠️")

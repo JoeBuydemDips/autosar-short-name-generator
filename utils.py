@@ -39,8 +39,8 @@ def long_name_to_short_name(user_input, data_frame):
     # Output results
     if no_match_list:
         # print(f"No abbreviation found for the following keyword(s): {', '.join(no_match_list)}")
-        result = "Invalid Autosar Long Name"
-        result += f"Consider changing the following keyword(s): {', '.join(no_match_list)}"
+        result = "Invalid Autosar Long Name.\n\n"
+        result += f"Consider changing the following keyword(s): {', '.join(no_match_list)}\n\n"
 
         valid = False
         
@@ -50,7 +50,7 @@ def long_name_to_short_name(user_input, data_frame):
             # suggestions = find_closest_match(keyword, df)
             # suggestions = get_suggestions(keyword, df)
             # print(f"Suggestions for {keyword}: {suggestions}")
-            result += f"\nSuggestions for {keyword}: {suggestions.title()}"
+            result += f"Suggestions for {keyword}: {suggestions.title()}"
     elif abbreviation_list:
         # If all abbreviations found, output concatenated result
         result = "".join(abbreviation_list)
@@ -209,16 +209,16 @@ def short_name_to_long_name(pascal_string, df):
             return ' '.join(keywords), valid
         else:
             valid = False
-            text = "Invalid Autosar Short Name!\n"
+            text = "Invalid Autosar Short Name!\n\n"
             text += "Consider changing the following Abbreviation(s): "
             text += (', '.join(abbreviations_not_found))
             return text, valid
     
     else:
         valid = False
-        text = "Invalid Autosar Short Name!"
-        text += "\nAutosar names should be PascalCase."
-        text += "\nAutosar names should have no spaces or underscores."
+        text = "Invalid Autosar Short Name!\n\n"
+        text += "Autosar names should be PascalCase.\n\n"
+        text += "Autosar names should have no spaces or underscores."
 
         return text, valid
 
