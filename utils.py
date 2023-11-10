@@ -223,9 +223,25 @@ def short_name_to_long_name(pascal_string, df):
         return text, valid
 
 
+# def is_pascal_case(s):
+#     """
+#     Check if a string is in valid PascalCase.
+
+#     Parameters:
+#     s (str): The string to check.
+
+#     Returns:
+#     bool: True if the string is in PascalCase, False otherwise.
+#     """
+#     # Regular expression for PascalCase
+#     pascal_case_pattern = re.compile(r'^[A-Z][a-z0-9]+(?:[A-Z][a-z0-9]+)*$')
+    
+#     # Return True if the string matches the pattern, False otherwise
+#     return bool(pascal_case_pattern.match(s))
+
 def is_pascal_case(s):
     """
-    Check if a string is in valid PascalCase.
+    Check if a string is in valid PascalCase and optionally ends with a capital letter.
 
     Parameters:
     s (str): The string to check.
@@ -233,9 +249,12 @@ def is_pascal_case(s):
     Returns:
     bool: True if the string is in PascalCase, False otherwise.
     """
-    # Regular expression for PascalCase
-    pascal_case_pattern = re.compile(r'^[A-Z][a-z0-9]+(?:[A-Z][a-z0-9]+)*$')
-    
-    # Return True if the string matches the pattern, False otherwise
-    return bool(pascal_case_pattern.match(s))
+    # Return False if the string is empty
+    if not s:
+        return False
+
+    # Check the first character is uppercase and the rest of the string
+    # has no spaces or underscores and follows the camelCase rules,
+    # The last character can be uppercase (optional)
+    return s[0].isupper() and all(x.isalpha() and (x.isupper() or x.islower()) for x in s[1:])
 
