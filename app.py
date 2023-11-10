@@ -3,7 +3,7 @@ import pandas as pd
 from utils import *
 
 # Streamlit UI
-st.title('Autosar Parameter Short Name Generator And Long Name Finder')
+st.title('Autosar Parameter Name Toolbox')
 
 # Define the list of options
 options = ["Generate Short Name", "Find Long Name"]
